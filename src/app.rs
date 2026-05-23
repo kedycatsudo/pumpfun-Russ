@@ -1,4 +1,4 @@
-use tracing::{ info};
+use tracing::{error, info};
 
 use crate::{
     config::AppConfig,
