@@ -1,0 +1,42 @@
+# Rust build output
+/target/
+
+# Cargo lockfile
+# Keep Cargo.lock for binary applications.
+# Uncomment the next line only if you intentionally want to ignore it.
+# Cargo.lock
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Local config overrides
+config/local.toml
+config/*.local.toml
+
+# Wallets / secrets
+wallet/
+*.key
+*.pem
+*.seed
+*.secret
+id.json
+
+# Logs
+*.log
+logs/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Editors / IDEs
+.vscode/
+.idea/
+
+# Rust analyzer / misc
+**/*.rs.bk

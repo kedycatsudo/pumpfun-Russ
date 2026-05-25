@@ -72,4 +72,4 @@ pub struct LoggingConfig {
 #[derive(Debug, Clone, Deserialize)]
 pub struct WalletConfig {
     pub keypair_path: String,
-}
+} 

@@ -1,0 +1,9 @@
+[runtime]
+app_name = "pumpfun-sniper"
+environment = "development"
+
+[logging]
+level = "info"
+
+[wallet]
+keypair_path = "wallet/id.json"
