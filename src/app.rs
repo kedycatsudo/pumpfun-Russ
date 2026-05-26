@@ -1,8 +1,9 @@
-use tracing::{ info};
+use tracing::info;
 
 use crate::{
     config::AppConfig,
     errors::AppError,
+    network,
     shutdown,
     state::AppState,
     wallet::LoadedWallet,
@@ -17,6 +18,9 @@ pub async fn run() -> Result<(), AppError> {
 
     let wallet = LoadedWallet::load(&config.wallet.keypair_path)?;
     info!("wallet loaded successfully");
+
+    let rpc_report = network::verify_http_rpc(&config)?;
+    network::log_rpc_startup_report(&rpc_report);
 
     let state = AppState::new(config, wallet);
     print_startup_summary(&state);

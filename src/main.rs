@@ -2,6 +2,7 @@ mod app;
 mod config;
 mod errors;
 mod logging;
+mod network;
 mod shutdown;
 mod state;
 mod wallet;
