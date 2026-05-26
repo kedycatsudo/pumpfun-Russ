@@ -27,6 +27,9 @@ id.json
 *.log
 logs/
 
+#target
+target/
+
 # macOS
 .DS_Store
 

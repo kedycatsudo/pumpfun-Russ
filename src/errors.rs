@@ -10,6 +10,9 @@ pub enum AppError {
 
     #[error("wallet error: {0}")]
     Wallet(#[from] WalletError),
+
+    #[error("rpc error: {0}")]
+    Rpc(#[from] solana_client::client_error::ClientError),
 }
 
 #[derive(Debug, Error)]

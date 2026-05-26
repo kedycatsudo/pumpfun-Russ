@@ -7,3 +7,12 @@ level = "info"
 
 [wallet]
 keypair_path = "wallet/id.json"
+
+[network.http_rpc]
+label = "chainstack-primary"
+url = "https://solana-mainnet.core.chainstack.com/5d579f7ee8bdff8bea1ae923df0f6deb"
+request_timeout_secs = 10
+health_check_interval_secs = 15
+blockhash_refresh_interval_secs = 10
+heartbeat_interval_secs = 30
+commitment = "processed"
