@@ -43,13 +43,9 @@ pub enum LoggingError {
 
 #[derive(Debug, Error)]
 pub enum WalletError {
-    #[error("failed to read wallet file at '{path}': {source}")]
-    Read {
+    #[error("wallet file at '{path}' is invalid: {message}")]
+    Parse {
         path: String,
-        #[source]
-        source: std::io::Error,
+        message: String,
     },
-
-    #[error("wallet file at '{path}' is empty")]
-    Empty { path: String },
 }

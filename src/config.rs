@@ -31,6 +31,29 @@ impl AppConfig {
     }
 
     fn validate(&self) -> Result<(), ConfigError> {
+        if self.network.http_rpc.max_retries == 0 {
+    return Err(ConfigError::Validation(
+        "network.http_rpc.max_retries must be greater than 0".to_string(),
+            ));
+        }
+
+        if self.network.http_rpc.retry_base_delay_ms == 0 {
+            return Err(ConfigError::Validation(
+                "network.http_rpc.retry_base_delay_ms must be greater than 0".to_string(),
+            ));
+        }
+
+        if self.network.http_rpc.retry_max_delay_ms == 0 {
+            return Err(ConfigError::Validation(
+                "network.http_rpc.retry_max_delay_ms must be greater than 0".to_string(),
+            ));
+        }
+
+        if self.network.http_rpc.retry_base_delay_ms > self.network.http_rpc.retry_max_delay_ms {
+            return Err(ConfigError::Validation(
+                "network.http_rpc.retry_base_delay_ms must be less than or equal to network.http_rpc.retry_max_delay_ms".to_string(),
+            ));
+        }
         if self.runtime.app_name.trim().is_empty() {
             return Err(ConfigError::Validation(
                 "runtime.app_name must not be empty".to_string(),
@@ -54,6 +77,20 @@ impl AppConfig {
                 "wallet.keypair_path must not be empty".to_string(),
             ));
         }
+        if self.wallet.mode.trim().is_empty() {
+            return Err(ConfigError::Validation(
+        "wallet.mode must not be empty".to_string(),
+            ));
+        }
+        match self.wallet.mode.trim().to_ascii_lowercase().as_str() {
+            "paper" | "live" => {}
+            other => {
+                return Err(ConfigError::Validation(format!(
+                    "wallet.mode must be either 'paper' or 'live'; got '{other}'"
+                )));
+            }
+        }
+
 
         if self.network.http_rpc.url.trim().is_empty() {
             return Err(ConfigError::Validation(
@@ -170,8 +207,10 @@ pub struct LoggingConfig {
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct WalletConfig {
+    pub mode: String,
     pub keypair_path: String,
 }
+
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct NetworkConfig {
@@ -188,6 +227,9 @@ pub struct HttpRpcConfig {
     pub health_check_interval_secs: u64,
     pub blockhash_refresh_interval_secs: u64,
     pub heartbeat_interval_secs: u64,
+    pub max_retries: u32,
+    pub retry_base_delay_ms: u64,
+    pub retry_max_delay_ms: u64,
     pub commitment: String,
 }
 

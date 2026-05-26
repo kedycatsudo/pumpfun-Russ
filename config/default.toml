@@ -6,6 +6,7 @@ environment = "development"
 level = "info"
 
 [wallet]
+mode = "paper"
 keypair_path = "wallet/id.json"
 
 [network.http_rpc]
@@ -16,3 +17,6 @@ health_check_interval_secs = 15
 blockhash_refresh_interval_secs = 10
 heartbeat_interval_secs = 30
 commitment = "processed"
+max_retries = 3
+retry_base_delay_ms = 250
+retry_max_delay_ms = 2000
