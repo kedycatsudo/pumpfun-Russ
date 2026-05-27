@@ -4,12 +4,37 @@ use serde::Deserialize;
 
 use crate::errors::ConfigError;
 
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct WatcherConfig {
+    pub enabled: bool,
+    pub poll_interval_secs: u64,
+    pub heartbeat_interval_secs: u64,
+    pub silence_warning_secs: u64,
+    pub websocket: WatcherWebSocketConfig,
+    pub mayhem: MayhemWatcherConfig,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct WatcherWebSocketConfig {
+    pub enabled: bool,
+    pub url: String,
+    pub commitment: String,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct MayhemWatcherConfig {
+    pub program_id: String,
+}
+
+
 #[derive(Debug, Clone, Deserialize)]
 pub struct AppConfig {
     pub runtime: RuntimeConfig,
     pub logging: LoggingConfig,
     pub wallet: WalletConfig,
     pub network: NetworkConfig,
+    pub watcher: WatcherConfig,
 }
 
 impl AppConfig {
@@ -31,6 +56,37 @@ impl AppConfig {
     }
 
     fn validate(&self) -> Result<(), ConfigError> {
+        if self.watcher.heartbeat_interval_secs == 0 {
+    return Err(ConfigError::Validation(
+        "watcher.heartbeat_interval_secs must be greater than 0".to_string(),
+            ));
+        }   
+
+        if self.watcher.silence_warning_secs == 0 {
+            return Err(ConfigError::Validation(
+                "watcher.silence_warning_secs must be greater than 0".to_string(),
+            ));
+        }
+
+        if self.watcher.websocket.enabled && self.watcher.websocket.url.trim().is_empty() {
+            return Err(ConfigError::Validation(
+                "watcher.websocket.url must not be empty when watcher.websocket.enabled=true".to_string(),
+            ));
+        }
+
+        if self.watcher.websocket.commitment.trim().is_empty() {
+            return Err(ConfigError::Validation(
+                "watcher.websocket.commitment must not be empty".to_string(),
+            ));
+        }
+
+        if self.watcher.mayhem.program_id.trim().is_empty() {
+            return Err(ConfigError::Validation(
+                "watcher.mayhem.program_id must not be empty".to_string(),
+            ));
+        }
+
+        
         if self.network.http_rpc.max_retries == 0 {
     return Err(ConfigError::Validation(
         "network.http_rpc.max_retries must be greater than 0".to_string(),
@@ -90,7 +146,23 @@ impl AppConfig {
                 )));
             }
         }
+        if self.watcher.poll_interval_secs == 0 {
+            return Err(ConfigError::Validation(
+                "watcher.poll_interval_secs must be greater than 0".to_string(),
+            ));
+        }
 
+        if self.watcher.heartbeat_interval_secs == 0 {
+            return Err(ConfigError::Validation(
+                "watcher.heartbeat_interval_secs must be greater than 0".to_string(),
+            ));
+        }
+
+        if self.watcher.silence_warning_secs == 0 {
+            return Err(ConfigError::Validation(
+                "watcher.silence_warning_secs must be greater than 0".to_string(),
+            ));
+        }
 
         if self.network.http_rpc.url.trim().is_empty() {
             return Err(ConfigError::Validation(

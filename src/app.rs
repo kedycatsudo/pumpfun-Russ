@@ -7,6 +7,7 @@ use crate::{
     shutdown,
     state::AppState,
     wallet::LoadedWallet,
+    watcher,
 };
 
 pub async fn run() -> Result<(), AppError> {
@@ -41,7 +42,8 @@ pub async fn run() -> Result<(), AppError> {
     print_startup_summary(&state);
     log_space();
 
-    tokio::spawn(network::run_http_rpc_monitor(config));
+    tokio::spawn(network::run_http_rpc_monitor(config.clone()));
+    tokio::spawn(watcher::run_raw_chain_watcher(config.clone()));
 
     info!("------------------------------------------------------------");
     info!("[STARTUP] application started");

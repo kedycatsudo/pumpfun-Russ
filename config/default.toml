@@ -20,3 +20,18 @@ commitment = "processed"
 max_retries = 3
 retry_base_delay_ms = 250
 retry_max_delay_ms = 2000
+
+[watcher]
+enabled = true
+poll_interval_secs = 5
+heartbeat_interval_secs = 15
+silence_warning_secs = 20
+
+[watcher.websocket]
+enabled = true
+url = "wss://solana-mainnet.core.chainstack.com/5d579f7ee8bdff8bea1ae923df0f6deb"
+commitment = "processed"
+
+[watcher.mayhem]
+program_id = "MAyhSmzXzV1pTf7LsNkrNwkWKTo4ougAJ1PPg47MD4e"
+
