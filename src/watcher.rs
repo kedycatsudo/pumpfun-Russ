@@ -1,13 +1,17 @@
 use std::time::{Duration, SystemTime};
 
 use futures_util::{SinkExt, StreamExt};
+use reqwest::Client;
 use serde::Deserialize;
 use serde_json::json;
 use tokio::time;
 use tokio_tungstenite::{connect_async, tungstenite::Message};
 use tracing::{info, warn};
 
-use crate::config::AppConfig;
+use crate::{
+    config::AppConfig,
+    decoder,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RawActivitySourceKind {
@@ -130,6 +134,17 @@ pub async fn run_raw_chain_watcher(config: AppConfig) {
         return;
     }
 
+    let http_timeout = Duration::from_secs(config.network.http_rpc.request_timeout_secs);
+    let http_client = match Client::builder().timeout(http_timeout).build() {
+        Ok(client) => client,
+        Err(error) => {
+            warn!("[WATCHER] failed to build HTTP client for Phase 4 decode: {error}");
+            return;
+        }
+    };
+
+    let decoder_state = decoder::new_shared_decoder_state();
+
     let mut state = WatcherState::new(&config);
     let heartbeat_interval_duration = Duration::from_secs(config.watcher.heartbeat_interval_secs);
     let silence_warning_duration = Duration::from_secs(config.watcher.silence_warning_secs);
@@ -157,7 +172,7 @@ pub async fn run_raw_chain_watcher(config: AppConfig) {
                 state.recompute_mode(silence_warning_duration);
                 log_watcher_heartbeat(&state);
             }
-            result = run_logs_subscription_once(&config, &mut state) => {
+            result = run_logs_subscription_once(&config, &http_client, &decoder_state, &mut state) => {
                 if let Err(error) = result {
                     state.reconnect_count += 1;
                     state.mode = WatcherMode::Disconnected;
@@ -177,6 +192,8 @@ pub async fn run_raw_chain_watcher(config: AppConfig) {
 
 async fn run_logs_subscription_once(
     config: &AppConfig,
+    http_client: &Client,
+    decoder_state: &decoder::SharedDecoderState,
     state: &mut WatcherState,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     state.mode = WatcherMode::Connecting;
@@ -213,7 +230,7 @@ async fn run_logs_subscription_once(
 
         match message {
             Message::Text(text) => {
-                if handle_ws_text_message(&text, state, config).is_err() {
+                if handle_ws_text_message(&text, http_client, decoder_state, state, config).await.is_err() {
                     state.ignored_notifications += 1;
                 }
             }
@@ -234,13 +251,16 @@ async fn run_logs_subscription_once(
     Err("websocket stream ended".into())
 }
 
-fn handle_ws_text_message(
+async fn handle_ws_text_message(
     text: &str,
+    http_client: &Client,
+    decoder_state: &decoder::SharedDecoderState,
     state: &mut WatcherState,
     config: &AppConfig,
 ) -> Result<(), serde_json::Error> {
     if let Some(candidate) = parse_candidate_from_ws_text_message(text, state, config)? {
         log_candidate_event(&candidate, state);
+        let _ = decoder::decode_raw_mayhem_candidate(http_client, config, decoder_state, &candidate).await;
     }
 
     Ok(())

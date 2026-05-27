@@ -7,6 +7,7 @@ mod shutdown;
 mod state;
 mod wallet;
 mod watcher;
+mod decoder;
 
 #[tokio::main]
 async fn main() {
