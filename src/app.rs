@@ -45,7 +45,6 @@ pub async fn run() -> Result<(), AppError> {
     tokio::spawn(network::run_http_rpc_monitor(config.clone()));
     tokio::spawn(watcher::run_raw_chain_watcher(config.clone()));
 
-    info!("------------------------------------------------------------");
     info!("[STARTUP] application started");
     log_space();
     shutdown::wait_for_signal().await;
@@ -72,35 +71,53 @@ fn print_startup_summary(state: &AppState) {
         "not configured"
     };
 
-    info!("------------------------------------------------------------");
-    info!("[STARTUP][SUMMARY] runtime summary");
-    log_space();
-    info!(
-        app_name = state.runtime.app_name.as_str(),
-        environment = state.runtime.environment.as_str(),
-        wallet_mode = state.config.wallet.mode.as_str(),
-        wallet_path = state.wallet.keypair_path.as_str(),
-        wallet_pubkey = state.wallet.pubkey.to_string(),
-        wallet_pubkey_short = state.wallet.pubkey_short.as_str(),
-        rpc_label = state.config.network.http_rpc.label.as_str(),
-        rpc_commitment = state.config.network.http_rpc.commitment.as_str(),
-        fallback_rpc = fallback_status,
-        yellowstone = yellowstone_status,
-        "[STARTUP][SUMMARY] startup summary"
-    );
+    let watcher_enabled = if state.config.watcher.enabled { "enabled" } else { "disabled" };
+    let watcher_websocket_enabled = if state.config.watcher.websocket.enabled {
+        "enabled"
+    } else {
+        "disabled"
+    };
 
+    info!("+==========================================================+");
+    info!("| STARTUP SUMMARY                                           |");
+    info!("+----------------------------------------------------------+");
+    info!("| [STARTUP]                                                |");
+    info!("| app_name={} |", state.runtime.app_name);
+    info!("| environment={} |", state.runtime.environment);
+    info!("+----------------------------------------------------------+");
+    info!("| [WALLET]                                                 |");
+    info!("| wallet_mode={} |", state.config.wallet.mode);
+    info!("| wallet_path={} |", state.wallet.keypair_path);
+    info!("| wallet_pubkey={} |", state.wallet.pubkey_short);
+    info!("+----------------------------------------------------------+");
+    info!("| [STARTUP RPC]                                            |");
+    info!("| rpc_label={} |", state.config.network.http_rpc.label);
     info!(
-        "[STARTUP][SUMMARY] app={} | env={} | wallet_mode={} | wallet={} | wallet_path={} | rpc={} | commitment={} | fallback={} | yellowstone={}",
-        state.runtime.app_name,
-        state.runtime.environment,
-        state.config.wallet.mode,
-        state.wallet.pubkey_short,
-        state.wallet.keypair_path,
-        state.config.network.http_rpc.label,
+        "| rpc_commitment={} |",
         state.config.network.http_rpc.commitment,
-        fallback_status,
-        yellowstone_status,
     );
+    info!("+----------------------------------------------------------+");
+    info!("| [NETWORK]                                                |");
+    info!("| fallback_rpc={} |", fallback_status);
+    info!("| yellowstone={} |", yellowstone_status);
+    info!("+----------------------------------------------------------+");
+    info!("| [WATCHER]                                                |");
+    info!("| watcher={} |", watcher_enabled);
+    info!("| watcher_websocket={} |", watcher_websocket_enabled);
+    info!("| watcher_source=websocket_logs |");
+    info!(
+        "| watcher_program_id={} |",
+        state.config.watcher.mayhem.program_id,
+    );
+    info!(
+        "| watcher_heartbeat_interval_secs={} |",
+        state.config.watcher.heartbeat_interval_secs,
+    );
+    info!(
+        "| watcher_silence_warning_secs={} |",
+        state.config.watcher.silence_warning_secs,
+    );
+    info!("+==========================================================+");
     log_space();
 }
 

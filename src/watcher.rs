@@ -150,20 +150,16 @@ pub async fn run_raw_chain_watcher(config: AppConfig) {
     let silence_warning_duration = Duration::from_secs(config.watcher.silence_warning_secs);
     let mut heartbeat_interval = time::interval(heartbeat_interval_duration);
 
-    info!("============================================================");
-    info!("[WATCHER] mayhem websocket watcher started");
-    info!("------------------------------------------------------------");
     info!(
         watcher_enabled = config.watcher.enabled,
         websocket_enabled = config.watcher.websocket.enabled,
         source_kind = state.source_kind.as_str(),
         rpc_label = state.rpc_label.as_str(),
-        websocket_url = config.watcher.websocket.url.as_str(),
         websocket_commitment = config.watcher.websocket.commitment.as_str(),
         mayhem_program_id = config.watcher.mayhem.program_id.as_str(),
         heartbeat_interval_secs = config.watcher.heartbeat_interval_secs,
         silence_warning_secs = config.watcher.silence_warning_secs,
-        "[WATCHER] watcher configuration loaded"
+        "[WATCHER] mayhem websocket watcher started"
     );
 
     loop {
@@ -259,7 +255,11 @@ async fn handle_ws_text_message(
     config: &AppConfig,
 ) -> Result<(), serde_json::Error> {
     if let Some(candidate) = parse_candidate_from_ws_text_message(text, state, config)? {
-        log_candidate_event(&candidate, state);
+        let _ = (
+            candidate.activity_kind.as_str(),
+            candidate.rpc_label.as_str(),
+            candidate.err.as_ref(),
+        );
         let _ = decoder::decode_raw_mayhem_candidate(http_client, config, decoder_state, &candidate).await;
     }
 
@@ -301,46 +301,6 @@ fn parse_candidate_from_ws_text_message(
     Ok(Some(candidate))
 }
 
-fn log_candidate_event(candidate: &RawMayhemCandidate, state: &WatcherState) {
-    info!(
-        source_kind = candidate.source_kind.as_str(),
-        activity_kind = candidate.activity_kind.as_str(),
-        rpc_label = candidate.rpc_label.as_str(),
-        signature = candidate.signature.as_str(),
-        slot = candidate.slot,
-        has_error = candidate.err.is_some(),
-        log_count = candidate.logs.len(),
-        total_notifications_seen = state.total_notifications_seen,
-        total_candidates_forwarded = state.total_candidates_forwarded,
-        matched_program_id = candidate.matched_program_id.as_str(),
-        "[WATCHER][CANDIDATE] raw Mayhem candidate observed"
-    );
-
-    info!("+==========================================================+");
-    info!("| MAYHEM CANDIDATE                                          |");
-    info!("+----------------------------------------------------------+");
-    info!(
-        "| signature={} | slot={} |",
-        shorten_signature(candidate.signature.as_str()),
-        candidate.slot,
-    );
-    info!(
-        "| source={} | activity={} |",
-        candidate.source_kind.as_str(),
-        candidate.activity_kind.as_str(),
-    );
-    info!(
-        "| has_error={} | log_count={} |",
-        candidate.err.is_some(),
-        candidate.logs.len(),
-    );
-    info!(
-        "| program_id={} |",
-        shorten_signature(candidate.matched_program_id.as_str()),
-    );
-    info!("+==========================================================+");
-}
-
 fn log_watcher_heartbeat(state: &WatcherState) {
     let last_event_age = format_optional_age(state.last_event_at);
     let last_slot = state
@@ -353,45 +313,19 @@ fn log_watcher_heartbeat(state: &WatcherState) {
         .as_deref()
         .unwrap_or("unknown");
 
-    info!(
-        source_kind = state.source_kind.as_str(),
-        rpc_label = state.rpc_label.as_str(),
-        mode = state.mode.as_str(),
-        total_notifications_seen = state.total_notifications_seen,
-        total_candidates_forwarded = state.total_candidates_forwarded,
-        ignored_notifications = state.ignored_notifications,
-        reconnect_count = state.reconnect_count,
-        last_slot = state.last_slot,
-        last_signature = last_signature,
-        matched_program_id = state.matched_program_id.as_str(),
-        "[WATCHER][HEARTBEAT] mayhem watcher heartbeat"
-    );
-
     info!("+==========================================================+");
     info!("| WATCHER: MAYHEM WEBSOCKET                                |");
     info!("+----------------------------------------------------------+");
-    info!(
-        "| source={} | rpc={} | mode={} |",
-        state.source_kind.as_str(),
-        state.rpc_label,
-        state.mode.as_str(),
-    );
-    info!(
-        "| notifications_seen={} | candidates_forwarded={} | ignored={} |",
-        state.total_notifications_seen,
-        state.total_candidates_forwarded,
-        state.ignored_notifications,
-    );
-    info!(
-        "| reconnects={} | last_slot={} |",
-        state.reconnect_count,
-        last_slot,
-    );
-    info!(
-        "| last_event={} | last_signature={} |",
-        last_event_age,
-        shorten_signature(last_signature),
-    );
+    info!("| source={} |", state.source_kind.as_str());
+    info!("| rpc={} |", state.rpc_label);
+    info!("| mode={} |", state.mode.as_str());
+    info!("| notifications_seen={} |", state.total_notifications_seen);
+    info!("| candidates_forwarded={} |", state.total_candidates_forwarded);
+    info!("| ignored={} |", state.ignored_notifications);
+    info!("| reconnects={} |", state.reconnect_count);
+    info!("| last_slot={} |", last_slot);
+    info!("| last_event={} |", last_event_age);
+    info!("| last_signature={} |", shorten_signature(last_signature));
     info!(
         "| mayhem_program_id={} |",
         shorten_signature(state.matched_program_id.as_str()),

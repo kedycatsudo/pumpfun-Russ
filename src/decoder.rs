@@ -339,19 +339,6 @@ fn log_decoded_event(event: &DecodedMayhemEvent) {
             .join(", ")
     };
 
-    info!(
-        signature = event.signature.as_str(),
-        slot = event.slot,
-        mint = event.mint.as_deref().unwrap_or("unknown"),
-        event_kind = event.event_kind.as_str(),
-        is_creation_event = event.is_creation_event,
-        is_first_seen_mint = event.is_first_seen_mint,
-        mayhem_status = event.mayhem_status.as_str(),
-        decode_confidence = event.decode_confidence.as_str(),
-        relevant_accounts_count = event.relevant_accounts.len(),
-        "[DECODER][EVENT] decoded Mayhem candidate"
-    );
-
     info!("+==========================================================+");
     info!("| PHASE 4: DECODED MAYHEM EVENT                            |");
     info!("+----------------------------------------------------------+");

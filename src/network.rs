@@ -177,10 +177,6 @@ pub async fn run_http_rpc_monitor(config: AppConfig) {
     let mut state = RpcMonitorState::new(&config);
 
     log_space();
-    info!("============================================================");
-    info!("[NETWORK][RPC] Starting HTTP RPC monitor");
-    info!("------------------------------------------------------------");
-    log_space();
     info!(
         rpc_label = rpc_config.label.as_str(),
         health_check_interval_secs = rpc_config.health_check_interval_secs,
@@ -189,7 +185,7 @@ pub async fn run_http_rpc_monitor(config: AppConfig) {
         max_retries = rpc_config.max_retries,
         retry_base_delay_ms = rpc_config.retry_base_delay_ms,
         retry_max_delay_ms = rpc_config.retry_max_delay_ms,
-        "[NETWORK][RPC] monitor configuration loaded"
+        "[NETWORK][RPC] monitor started"
     );
     log_space();
 
@@ -423,61 +419,35 @@ fn log_heartbeat(
         "not configured"
     };
 
-    info!(
-        rpc_label = state.label.as_str(),
-        mode = state.mode.as_str(),
-        health_latency_ms = state.latest_health_check_latency_ms,
-        blockhash_latency_ms = state.latest_blockhash_latency_ms,
-        health_failures = state.consecutive_health_check_failures,
-        blockhash_failures = state.consecutive_blockhash_failures,
-        health_retry_count = state.last_health_retry_count,
-        blockhash_retry_count = state.last_blockhash_retry_count,
-        health_stale,
-        blockhash_stale,
-        latest_blockhash = state.latest_blockhash.as_deref().unwrap_or("unknown"),
-        "[HEARTBEAT][RPC] HTTP RPC heartbeat"
-    );
-
     log_space();
     info!("+==========================================================+");
     info!("| HEARTBEAT: HTTP RPC                                     |");
     info!("+----------------------------------------------------------+");
+    info!("| rpc={} |", state.label);
+    info!("| mode={} |", state.mode.as_str());
+    info!("| commitment={} |", state.commitment);
+    info!("| health_latency={} |", health_latency);
+    info!("| blockhash_latency={} |", blockhash_latency);
+    info!("| last_health={} |", last_health_age);
+    info!("| last_blockhash={} |", last_blockhash_age);
+    info!("| health_retries={} |", state.last_health_retry_count);
+    info!("| blockhash_retries={} |", state.last_blockhash_retry_count);
     info!(
-        "| rpc={} | mode={} | commitment={} |",
-        state.label,
-        state.mode.as_str(),
-        state.commitment,
-    );
-    info!(
-        "| health_latency={} | blockhash_latency={} |",
-        health_latency,
-        blockhash_latency,
-    );
-    info!(
-        "| last_health={} | last_blockhash={} |",
-        last_health_age,
-        last_blockhash_age,
-    );
-    info!(
-        "| health_retries={} | blockhash_retries={} |",
-        state.last_health_retry_count,
-        state.last_blockhash_retry_count,
-    );
-    info!(
-        "| health_failures={} | blockhash_failures={} |",
+        "| health_failures={} |",
         state.consecutive_health_check_failures,
+    );
+    info!(
+        "| blockhash_failures={} |",
         state.consecutive_blockhash_failures,
     );
+    info!("| health_stale={} |", health_stale);
+    info!("| blockhash_stale={} |", blockhash_stale);
     info!(
-        "| health_stale={} | blockhash_stale={} |",
-        health_stale,
-        blockhash_stale,
+        "| latest_blockhash={} |",
+        state.latest_blockhash.as_deref().unwrap_or("unknown"),
     );
-    info!(
-        "| fallback={} | yellowstone={} |",
-        fallback,
-        yellowstone,
-    );
+    info!("| fallback={} |", fallback);
+    info!("| yellowstone={} |", yellowstone);
     info!("+==========================================================+");
 
     log_space();
