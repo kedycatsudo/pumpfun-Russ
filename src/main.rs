@@ -8,7 +8,6 @@ mod state;
 mod wallet;
 mod watcher;
 mod decoder;
-mod qualifier;
 
 #[tokio::main]
 async fn main() {

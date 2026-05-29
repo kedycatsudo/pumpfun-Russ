@@ -11,7 +11,6 @@ use tracing::{info, warn};
 use crate::{
     config::AppConfig,
     decoder,
-    qualifier,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -139,13 +138,10 @@ pub async fn run_raw_chain_watcher(config: AppConfig) {
     let http_client = match Client::builder().timeout(http_timeout).build() {
         Ok(client) => client,
         Err(error) => {
-            warn!("[WATCHER] failed to build HTTP client for Phase 4 decode: {error}");
+            warn!("[WATCHER] failed to build HTTP client for log capture: {error}");
             return;
         }
     };
-
-    let decoder_state = decoder::new_shared_decoder_state();
-    let qualifier_state = qualifier::new_shared_qualifier_state();
 
     let mut state = WatcherState::new(&config);
     let heartbeat_interval_duration = Duration::from_secs(config.watcher.heartbeat_interval_secs);
@@ -170,7 +166,7 @@ pub async fn run_raw_chain_watcher(config: AppConfig) {
                 state.recompute_mode(silence_warning_duration);
                 log_watcher_heartbeat(&state);
             }
-            result = run_logs_subscription_once(&config, &http_client, &decoder_state, &qualifier_state, &mut state) => {
+            result = run_logs_subscription_once(&config, &http_client, &mut state) => {
                 if let Err(error) = result {
                     state.reconnect_count += 1;
                     state.mode = WatcherMode::Disconnected;
@@ -191,8 +187,6 @@ pub async fn run_raw_chain_watcher(config: AppConfig) {
 async fn run_logs_subscription_once(
     config: &AppConfig,
     http_client: &Client,
-    decoder_state: &decoder::SharedDecoderState,
-    qualifier_state: &qualifier::SharedQualifierState,
     state: &mut WatcherState,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     state.mode = WatcherMode::Connecting;
@@ -229,7 +223,7 @@ async fn run_logs_subscription_once(
 
         match message {
             Message::Text(text) => {
-                if handle_ws_text_message(&text, http_client, decoder_state, qualifier_state, state, config).await.is_err() {
+                if handle_ws_text_message(&text, http_client, state, config).await.is_err() {
                     state.ignored_notifications += 1;
                 }
             }
@@ -253,8 +247,6 @@ async fn run_logs_subscription_once(
 async fn handle_ws_text_message(
     text: &str,
     http_client: &Client,
-    decoder_state: &decoder::SharedDecoderState,
-    qualifier_state: &qualifier::SharedQualifierState,
     state: &mut WatcherState,
     config: &AppConfig,
 ) -> Result<(), serde_json::Error> {
@@ -265,14 +257,16 @@ async fn handle_ws_text_message(
             candidate.err.as_ref(),
         );
 
-        if let Some(decoded) =
-            decoder::decode_raw_mayhem_candidate(http_client, config, decoder_state, &candidate).await
-        {
-            let _ = qualifier::qualify_decoded_event(qualifier_state, &decoded).await;
+        if is_create_v2_candidate(&candidate) {
+            decoder::capture_log_messages_only(http_client, config, &candidate).await;
         }
     }
 
     Ok(())
+}
+
+fn is_create_v2_candidate(candidate: &RawMayhemCandidate) -> bool {
+    candidate.logs.iter().any(|log| log.contains("Instruction: CreateV2"))
 }
 
 fn parse_candidate_from_ws_text_message(

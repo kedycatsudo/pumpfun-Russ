@@ -7,7 +7,6 @@ use std::{
 use tokio::sync::Mutex;
 use tracing::info;
 
-use crate::decoder::{DecodeConfidence, DecodedEventKind, DecodedMayhemEvent, MayhemStatus};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CandidateDecisionKind {

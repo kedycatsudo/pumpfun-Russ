@@ -1,0 +1,206 @@
+[
+  {
+    "pubkey": "4S2KTv21tXezwgV1KxRX35J1NRw2hcYpV1kknj31gpva",
+    "signer": true,
+    "source": "transaction",
+    "writable": true
+  },
+  {
+    "pubkey": "3bjK2YYsHLMExufFfdpA5WiXcJnm2fo88QMPsMRXpump",
+    "signer": true,
+    "source": "transaction",
+    "writable": true
+  },
+  {
+    "pubkey": "9LEe9FV2cAPMHL3jWBm6GKaoYr95r14gvKRACo6e1Lrp",
+    "signer": false,
+    "source": "transaction",
+    "writable": true
+  },
+  {
+    "pubkey": "7y6TJqcHfMTHTNivCFX31aac5YVeKSbgyY3otwYNnQ2c",
+    "signer": false,
+    "source": "transaction",
+    "writable": true
+  },
+  {
+    "pubkey": "6EUFcSE1VtQ19Y67KJYBgY21sPV5YthdmvvcpbUdwSmb",
+    "signer": false,
+    "source": "transaction",
+    "writable": true
+  },
+  {
+    "pubkey": "HwwcHtFU58Zrq1QDZRt722fgc3QkKdhhQVZMVqd9SvT1",
+    "signer": false,
+    "source": "transaction",
+    "writable": true
+  },
+  {
+    "pubkey": "HhyrAimjqiFhmMuW2pyr9FNsEHSX4yEfZEekrZkZF5uc",
+    "signer": false,
+    "source": "transaction",
+    "writable": true
+  },
+  {
+    "pubkey": "AAaQuGVFyCUaN3VZdEKB8vgUfCgXNkT63P5BBGYEvP3d",
+    "signer": false,
+    "source": "transaction",
+    "writable": true
+  },
+  {
+    "pubkey": "6TjjYUqnPjW5NyVvvdWaDTrMi3NhNLGe2M5HDuvyCv1V",
+    "signer": false,
+    "source": "transaction",
+    "writable": true
+  },
+  {
+    "pubkey": "BrqWhxgWrxGDfHfAeaJeCpmheDQWuK2iW3LETLWcFkxQ",
+    "signer": false,
+    "source": "transaction",
+    "writable": true
+  },
+  {
+    "pubkey": "9PR5jKe6oDs7krQ7cAM6Vs2Exg5PLD4qKvuTPGKgupma",
+    "signer": false,
+    "source": "transaction",
+    "writable": true
+  },
+  {
+    "pubkey": "AY1Cr6kui6KYee3n7CDrQzt5xManYqLhSsg7CmCgesMu",
+    "signer": false,
+    "source": "transaction",
+    "writable": true
+  },
+  {
+    "pubkey": "B22yMRs4WbGTyscnT7CYbxotwGcSXvcUGkFyX2unUCMU",
+    "signer": false,
+    "source": "transaction",
+    "writable": true
+  },
+  {
+    "pubkey": "ComputeBudget111111111111111111111111111111",
+    "signer": false,
+    "source": "transaction",
+    "writable": false
+  },
+  {
+    "pubkey": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P",
+    "signer": false,
+    "source": "transaction",
+    "writable": false
+  },
+  {
+    "pubkey": "TSLvdd1pWpHVjahSpsvCXUbgwsL3JAcvokwaKt1eokM",
+    "signer": false,
+    "source": "transaction",
+    "writable": false
+  },
+  {
+    "pubkey": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+    "signer": false,
+    "source": "transaction",
+    "writable": false
+  },
+  {
+    "pubkey": "5dN3QSdSZWWHWwz6L4Wg62LY5nUBuKWr5yraGqJQ6go1",
+    "signer": false,
+    "source": "transaction",
+    "writable": false
+  },
+  {
+    "pubkey": "MAyhSmzXzV1pTf7LsNkrNwkWKTo4ougAJ1PPg47MD4e",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": true
+  },
+  {
+    "pubkey": "BwWK17cbHxwWBKZkUYvzxLcNQ1YVyaFezduWbtm2de6s",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": true
+  },
+  {
+    "pubkey": "6AUH3WEHucYZyC61hqpqYUWVto5qA5hjHuNQ32GNnNxA",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": true
+  },
+  {
+    "pubkey": "ghSBUgyxyvyurm1vJBkU4rUyLJoUipCZhFeiBogKCSy",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": true
+  },
+  {
+    "pubkey": "3BpXnfJaUTiwXnJNe7Ej1rcbzqTTQUvLShZaWazebsVR",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": true
+  },
+  {
+    "pubkey": "6rVkF4HSgy1jrnC3HogfRgPHrq4CtLg5f11URpsC4i9D",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": true
+  },
+  {
+    "pubkey": "4wTV1YmiEkRvAtNtsSGPtUrqRYQMe5SKy2uB4Jjaxnjf",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": false
+  },
+  {
+    "pubkey": "11111111111111111111111111111111",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": false
+  },
+  {
+    "pubkey": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": false
+  },
+  {
+    "pubkey": "13ec7XdrjF3h3YcqBTFDSReRcUFwbCnJaAQspM4j6DDJ",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": false
+  },
+  {
+    "pubkey": "Ce6TQqeHC9p8KetsN6JsjHK7UTZk7nasjjnr7XxXp9F1",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": false
+  },
+  {
+    "pubkey": "So11111111111111111111111111111111111111112",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": false
+  },
+  {
+    "pubkey": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": false
+  },
+  {
+    "pubkey": "Hq2wp8uJ9jCPsYgNHex8RtqdvMPfVGoYwjvF1ATiwn2Y",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": false
+  },
+  {
+    "pubkey": "8Wf5TiAheLUqBrKXeYg2JtAFFMWtKdG2BSFgqUcPVwTt",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": false
+  },
+  {
+    "pubkey": "pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ",
+    "signer": false,
+    "source": "lookupTable",
+    "writable": false
+  }
+]

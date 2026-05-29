@@ -1,0 +1,24 @@
+[
+  {
+    "accountKey": "Hyif6eWb8x88RVrvjPfabsgRYnwkVnyByEXTVTXbUcyP",
+    "readonlyIndexes": [
+      18,
+      1,
+      14,
+      3,
+      4,
+      15,
+      124,
+      12,
+      11
+    ],
+    "writableIndexes": [
+      35,
+      19,
+      94,
+      88,
+      37,
+      16
+    ]
+  }
+]
